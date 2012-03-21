@@ -1,0 +1,40 @@
+<html>
+	<head>
+		
+		<title>2d Javascript Game Engine</title>
+		
+		<script src="engine.js" type="text/javascript"></script>
+		<script src="base.js" type="text/javascript"></script>
+		
+		<script src="map.js" type="text/javascript"></script>
+		<script src="asset.js" type="text/javascript"></script>
+
+		
+	</head>
+	<body>
+		<canvas id="game">Sorry! This game relies on canvas and HTML5.<br>
+		Please update to something like <a href="https://www.google.com/chrome/">Google Chrome</a> :)</canvas>
+		<ul>
+		<li><a href="engine.1.js">Game Engine - engine.js</a></li>
+		<li><a href="map.js">Map Object - map.js</a></li>
+		<li><a href="Player.js">Player (asset) Object - engine.js</a></li>
+		<li>Implementation Code:
+<pre>
+&lt;div id="game"&gt;&lt;/div&gt;
+&lt;script type="text/javascript">
+	var game = engine("game");			//Create the game engine
+	var assets = [new Player(), new Enemy()];	//An array of assets
+	game.init(Level1, assets);			//Initialize the game
+	game.addAsset(new Boat());			//Add additional assets, if desired
+&lt;/script&gt;
+</pre></li>
+	</ul>
+		
+		<script type="text/javascript">
+			var game = engine("game");			//Create the game engine
+			var assets = [new Player(), new Enemy()];	//An array of assets
+			game.init(Level1, assets);			//Initialize the game
+			game.addAsset(new Boat());			//Add additional assets
+		</script>
+	</body>
+</html>
