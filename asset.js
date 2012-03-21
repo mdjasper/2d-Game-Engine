@@ -6,7 +6,7 @@
 var Asset = Base.extend({
 	collidable: true,
 	health: 100,
-	type: "generic",
+	type: "",
 	alive: true
 });
 
