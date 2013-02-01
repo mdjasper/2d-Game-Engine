@@ -1,6 +1,8 @@
 A 2-d tile based game engine in JavaScript/ HTML5 canvas
 
-Copyright (c) 2012 Michael Jasper http://www.mikedoesweb.com
+Copyright (c) 2013 Michael Jasper http://www.mikedoesweb.com
+
+A live demo may be found at http://www.mikedoesweb.com/sandbox/game
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
