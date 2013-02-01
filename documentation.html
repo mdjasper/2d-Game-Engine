@@ -1,0 +1,422 @@
+<html>
+	<head>
+		
+		<title>Documentation</title>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <link href="prettify/prettify.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="prettify/prettify.js"></script>
+		<style>
+			body{
+				font-family:arial;
+				max-width:960px;
+				margin:0 auto;
+			}
+			.function{
+				background:#f9f9f9;
+				margin-top:10px;
+				border:#aeaeae 1px solid;
+				padding:10px;
+			}
+			.function h3{
+				margin:5px 0px;
+				color:#0000ff;
+			}
+			.function pre{
+				background:#fff;
+				padding:10px;
+				margin:10px;
+				border:1px solid #aeaeae;
+			}
+			.clear{
+				clear:both;
+			}
+			#nav{
+				position:fixed;
+				width:200px;
+			}
+			#nav ul{
+				list-style:circle;
+				margin:0px;
+			}
+			#nav h3{
+				margin:5px;
+			}
+			#docs{
+				
+				margin-left:250px;
+			}
+		</style>
+	</head>
+    <script>
+        $(document).ready(function () {
+            $("pre").addClass("prettyprint");
+        });
+    </script>
+	<body onload="prettyPrint()">
+	
+	<script type="text/javascript">
+	  var _gaq = _gaq || [];
+	  _gaq.push(['_setAccount', 'UA-6431083-2']);
+	  _gaq.push(['_trackPageview']);
+
+	  (function() {
+	    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+	    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+	    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+	  })();
+
+	</script>
+	
+		<div id="nav">
+			<h3>Game Engine</h3>
+			<ul>
+				<li><a href="#engine">engine</a></li>
+				<li><a href="#init">engine.init</a></li>
+				<li><a href="#preLoadMap">engine.preLoadMap</a></li>
+				<li><a href="#preLoadCheck">engine.preLoadCheck</a></li>
+				<li><a href="#loop">engine.loop</a></li>
+				<li><a href="#drawMap">engine.drawMap</a></li>
+				<li><a href="#addAsset">engine.addAsset</a></li>
+				<li><a href="#keyPressed">engine.keyPressed</a></li>
+				<li><a href="#addText">engine.addText</a></li>
+			</ul>
+			
+			<h3>Asset</h3>
+			<ul>
+				<li><a href="#asset">asset</a></li>
+				<li><a href="#extend">asset.extend</a></li>
+				<li><a href="#GUIAsset">GUI Asset</a></li>
+			</ul>
+			
+			<h3>Map</h3>
+			<ul>
+				<li><a href="#map">map</a></li>
+			</ul>
+		</div>
+		
+		<div id="docs">
+		<h1>2d Javascript Game Engine</h1>
+			<h2>Documentation</h2>
+		<div class="function">
+			<h3><a name="engine">engine (target)</a></h3>
+			<h4>Parameters</h4>
+			<ul>
+				<li>@target</li>
+			</ul>
+			<h4>Description</h4>
+			<p>The constructor function for the game engine. Accepts `target`, which is the id of the canvas element
+			the game will target</p>
+			<h4>Sample Usage</h4>
+<pre>
+&lt;canvas id="elementid"&gt;&lt;/canvas&gt;
+&lt;script&gt;
+    var game = engine("elementid");
+&lt;/script&gt;
+</pre>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="init">engine.init (map, assets)</a></h3>
+			<h4>Parameters</h4>
+			<ul>
+				<li><a href="#map">@map</a></li>
+				<li>@assets</li>
+			</ul>
+			<h4>Description</h4>
+			<p>This function loads the map, and an array of assets(main player, enemies, etc) in the 
+			game engine. When finished, it calls the games engines preLoadMap function</p>
+			<h4>Sample Usage</h4>
+<pre>
+var assets = [new Player(), new Enemy(), new GUI()];
+game.init(Level1, assets);
+</pre>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="preLoadMap">engine.preLoadMap ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>An internal function to load the images defined in the map file. This function is `blocking`
+			and calls preLoadCheck to check if all images have been loaded before proceeding.
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="preLoadCheck">engine.preLoadCheck ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>The preLoadMap helper function makes sure that the engine doesn't proceed before the map
+			images are loaded.
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="loop">engine.loop ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>The main in-game loop. On each loop cycle, the loop does the following:
+				<ul>
+					<li>Loops through each asset (player, enemies, etc)</li>
+					<li>Checks if that assets is alive</li>
+					<li>Checks if an asset is colliding with another asset</li>
+					<li>Calls asset.update() with the engine.currentKey, and assets collision status</li>
+					<li>Checks if an asset is colliding with a map-defined boundary</li>
+					<li>Checks if an asset is in-bounds on the map</li>
+					<li>Calls engine.drawMap()</li>
+					<li>Draws each asset over map</li>
+					<li>Resets engine.currentKey</li>
+				</ul>
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="drawMap">engine.drawMap ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>Redraws the map over the canvas element
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="addAsset">engine.addAsset (asset)</a></h3>
+			<h4>Parameters</h4>
+			<ul>
+				<li><a href="#asset">@asset</a></li>
+			</ul>
+			<h4>Description</h4>
+			<p>Allows assets to be added to the game engine after engine.init has been called.</p>
+			<h4>Sample Usage</h4>
+<pre>
+game.addAsset(new Boat());
+</pre>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="keyPressed">engine.keyPressed ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>Internal helper function that passes the key from window.onkeydown event to engine.
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="keyPressed">engine.keyPressed ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>Internal helper function that passes the key from window.onkeydown event to engine.
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="asset">asset ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>Asset is the base class for all user defined assets (player, enemies, etc). 
+			<a href="#extend">Asset.extend</a> creates usable assets that can be passed into
+			<a href="#addAsset">engine.addAsset</a> or <a href="#init">engine.init</a>. It contains default 
+			settings for assets that can be changed: 
+			<ul>
+				<li>collidable: true,</li>
+				<li>health: 100,</li>
+				<li>type: "generic",</li>
+				<li>alive: true</li>
+			</ul>
+			</p>
+			<h4>Sample Usage</h4>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="extend">asset.extend ()</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>asset.extend provides the framework to build players, enemies, etc... and defines much of the 
+			game dynamics and play. Passed into asset.extend is an object that will define the attributes
+			and functions available to the new asset.
+			The three main functions passed into asset.extend are:
+			<ul>
+				<li>init()</li>
+				<li>update()</li>
+				<li>constructor()</li>
+			</ul>
+			</p>
+			<h4>Sample Usage</h4>
+<h5>Creating a new asset</h5>
+<pre>
+var Player = Asset.extend({
+	constructor: function(){},
+	init: function(){},
+	update: function(){};
+});
+</pre>
+			
+<h5>constructor</h5>
+<pre>
+constructor: function(x,y){
+	this.x = x;
+	this.y = y;
+},
+</pre>	
+		
+<h5>init</h5>
+<pre>
+init: function(){
+	this.width = 32;		// width in px
+	this.height = 32;		// height in px
+	this.x = 32;			// x coord in px
+	this.y = 32;			// y coord in px
+	this.movement = 32;		// increment in movement in px
+	this.image = "image/file/path";
+	this.collidable = true;
+	this.health = 100;
+	this.type = "player";
+},
+</pre>
+
+<h5>update</h5>
+<pre>
+update: function(key, collisionType){
+	this.oldx = this.x;
+	this.oldy = this.y;
+	
+	if(collisionType == "enemy"){
+		this.health -= 1;
+		if(this.health < 50){
+			this.image = "new/image/path"
+		}
+		if(this.health < 1){
+			this.alive = false;
+		}
+	}
+	
+	switch(key){
+		case "Left":
+			this.x -= this.movement;
+			return true;
+			break;
+		case "Right":
+			this.x += this.movement;
+			return true;
+			break;
+		case "Up":
+			this.y -= this.movement;
+			return true;
+			break;
+		case "Down":
+			this.y += this.movement;
+			return true;
+			break;
+		case "Space":
+			game.addAsset(new Bullet(this.x + 32, this.y + 16));
+			break;
+	}
+},
+</pre>
+
+
+
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		<div class="function">
+			<h3><a name="GUIAsset">Gui Assets</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>A GUI asset is  type of asset that is used to create initial GUI screens. A
+			GUI asset only needs to contain one function -- init() -- where it calls the engines 
+			<a href="#addText">addText()</a> function. This asset is added with the other game assets
+			with the assets array.
+			</p>
+			<h4>Sample Usage</h4>
+			<pre>
+ var GUI = Asset.extend({
+    init: function(){
+        this.alive = false;
+        game.addText("Game Demo", "20px Arial", 5, 20, "white");
+    }
+ });
+			</pre>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		
+		<div class="function">
+			<h3><a name="map">Map</a></h3>
+			<h4>Parameters</h4>
+			<h4>Description</h4>
+			<p>A map is an object passed into engine.init(). A map object has properties
+			that define the size, layout, images, and collidability of map tiles.
+			</p>
+			<h4>Sample Usage</h4>
+<pre>
+var Level1 = {
+	width: 11,	// number of tiles wide
+	height: 10,	// number of tiles tall
+	tileWidth: 32,	// width in px of an individual tile
+	tileHeight: 32,	// height in px of an individual tile
+	tiles: [
+		[4,4,4,4,4,4,4,4,4,4,3],
+		[1,2,2,2,2,2,2,2,2,2,3],
+		[1,2,2,2,2,2,2,2,2,2,3],
+		[1,2,2,2,2,2,2,2,2,2,3],
+		[1,2,2,2,2,2,2,2,2,2,3],
+		[1,2,2,2,2,2,2,2,2,3,3],
+		[1,2,2,2,2,2,2,2,2,3,3],
+		[1,2,2,2,3,2,2,2,3,3,3],
+		[1,2,3,3,3,3,3,3,3,3,3],
+		[3,3,3,3,3,3,3,3,3,3,3]
+	],
+	tileDefinition: {
+		1: "http://www.mikedoesweb.com/sandbox/game/images/rocks.png",
+		2: "http://www.mikedoesweb.com/sandbox/game/images/grass.png",
+		3: "http://www.mikedoesweb.com/sandbox/game/images/water.png",
+		4: "http://www.mikedoesweb.com/sandbox/game/images/rocks-top.png"
+	},
+	collidable: {
+		1: "rock",
+		3: "water",
+		4: "rock"
+	}
+};
+</pre>
+			
+			<a href="#top" style="float:right">Top</a>
+			<div class="clear"></div>
+		</div>
+		
+		<div class="function">
+			<h3><a name="addText">engine.addText()</a></h3>
+			<h4>Parameters</h4>
+			<ul>
+			<li>@text</li>
+			<li>@font</li>
+			<li>@xPoint</li>
+			<li>@yPoint</li>
+			<li>@color</li>
+			</ul>
+			<h4>Description</h4>
+			<p>Adds GUI text to the canvas element, often used in a <a href="#GUIAsset">GUI asset</a>
+			</p>
+			<h4>Sample Usage</h4>
+			<pre>
+game.addText("Game Demo", "20px Arial", 5, 20, "white");
+			</pre>
+		<a href="#top" style="float:right">Top</a><div class="clear"></div></div>
+		
+		</div>
+		
+	</body>
+</html>

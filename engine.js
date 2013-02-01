@@ -19,7 +19,7 @@ function engine(target) {
 		Version: 0.3,
 		Author: "Michael Jasper",
 		Created: "21 February 2012",
-		Updated: "8 March 2012"
+		Updated: "12 October 2012"
 	};
 
 	if (target) {
@@ -35,10 +35,11 @@ function engine(target) {
 		this.target = document.getElementById(target);
 		this.context= this.target.getContext('2d'); 
 		
-		this.fps = 20;				//loop iterations/per second
+		this.fps = 10;				//loop iterations/per second
 		
 		this.assets = 		[];		//array of assets: player, enemies, other assets
-		this.assetImages = 	[];		//array of assets: player, enemies, other assets
+		this.assetImages =  [];		//array of assets: player, enemies, other assets
+		this.textAssets =   [];     //array of text assets, drawn during loop
 		this.map;					//The map file, passed into the init
 		this.tiles = 		[];		//Array of unique tile images
 		this.totalTiles = 	0;		//Total number of unique tiles
@@ -64,12 +65,21 @@ function engine(target) {
 
 engine.prototype = {
 
-	init: function (map, assets){
+	init: function (map, assetArray){
 	
-		console.log("init()");
+		//console.log("init()");
 		
-		this.map = map;
-		this.assets = assets;
+	    this.map = map;
+
+	    for (var a in assetArray) {
+	        if (assetArray[a].type == "GUI") {
+	            this.textAssets.push(assetArray[a]);
+	        } else {
+	            this.assets.push(assetArray[a]);
+	        }
+	    }
+	    //console.log(this.assets);
+	    //console.log(this.textAssets);
 		
 		//Define dimentions
 		this.tileWidth = map.tileWidth;
@@ -85,6 +95,11 @@ engine.prototype = {
 		for(var a in this.assets){
 			this.assets[a].init();
 		}
+
+	    //Call all textAsset's init() function
+		for (var a in this.textAssets) {
+		    this.textAssets[a].init();
+		}
 		
 		//Pre-load the map, then jump into the game loop
 		this.preLoadMap();
@@ -96,7 +111,7 @@ engine.prototype = {
 
 	preLoadMap: function(){
 		
-		console.log("preLoadMap()");
+		//console.log("preLoadMap()");
 		
 		this.tileCount = Object.keys(this.map.tileDefinition).length;
 		
@@ -106,7 +121,7 @@ engine.prototype = {
 			this.tiles[image].src = this.map.tileDefinition[image];
 			var that = this;
 			this.tiles[image].onload = function(){
-				console.log("tile loaded");
+				//console.log("tile loaded");
 				that.preLoadCheck();
 			}
 			
@@ -128,78 +143,103 @@ engine.prototype = {
 	
 	loop: function() {
 	
-		console.log("Loop()");
+		//console.log("Loop()");
 		var me = this;
 	
         setInterval(function() {
-	
+			me.context.save();
 			//loop through the assets
-			for (var a in me.assets){
+			for (var a in me.assets) {
+
+			    /* Asset Collisions
+                ===================*/
+
 				if(me.assets[a].alive){
-					var collision = "-1";
+				    var collision = "-1";
+
 					//Check if current asset is colliding with any other asset
 					for (var b in me.assets){
 						//don't compare an asset against itself
-						if(me.assets[a].x !== me.assets[b]){
+						if(me.assets[a] != me.assets[b]){
 							var dx = Math.abs(me.assets[a].x - me.assets[b].x);
 							var dy = Math.abs(me.assets[a].y - me.assets[b].y);
 							//console.log(dx + ", " + dy);
 							if(dx < me.assets[a].width/2 && dy < me.assets[a].height/2){
 								//they are colliding
-								collision = me.assets[b].type;
+							    collision = me.assets[b].type;
+							    console.log(me.assets[a].type + "\t" + collision);
 							}
 						}
 					}
 				
-				
-					//call the assets update function	
-					if( me.assets[a].update(me.currentKey, collision) ){
-				
-						/*//limit asset movement boundaries to on screen positions
-						if(me.assets[a].x < 0){
-							me.assets[a].x = 0;
-						}
-						if(me.assets[a].y < 0){
-							me.assets[a].y = 0;
-						}
-						if(me.assets[a].x > me.mapWidth - me.assets[a].width){
-							me.assets[a].x = me.mapWidth - me.assets[a].width;
-						}
-						if(me.assets[a].y > me.mapHeight - me.assets[a].height){
-							me.assets[a].y = me.mapHeight - me.assets[a].height;
-						}	
-						*/
-						
-						//If an asset collides with an in-map collidable tile
-						//push it back to it's previous good position
-						if(me.assets[a].collidable){
-							var posx = me.assets[a].x / me.map.tileWidth;
-							var posy = me.assets[a].y / me.map.tileHeight;
-							//console.log("old: ("+ me.assets[a].oldx + ", " + me.assets[a].oldy + ")");
-							//console.log("new: ("+ me.assets[a].x + ", " + me.assets[a].y + ")");
-							//console.log( me.map.collidable[ me.map.tiles[posy][posx] ] );
-							if(me.map.collidable[ me.map.tiles[posy][posx] ]){
-								//if a barrier is met, reset the position
-								me.assets[a].x = me.assets[a].oldx;
-								me.assets[a].y = me.assets[a].oldy;
-								
+				    /* Update Assets
+                    ================*/ 
+
+					if(typeof me.assets[a].update == 'function'){
+						if(me.assets[a].update(me.currentKey, collision) ){
+					
+							/*//limit asset movement boundaries to on screen positions
+							if(me.assets[a].x < 0){
+								me.assets[a].x = 0;
 							}
+							if(me.assets[a].y < 0){
+								me.assets[a].y = 0;
+							}
+							if(me.assets[a].x > me.mapWidth - me.assets[a].width){
+								me.assets[a].x = me.mapWidth - me.assets[a].width;
+							}
+							if(me.assets[a].y > me.mapHeight - me.assets[a].height){
+								me.assets[a].y = me.mapHeight - me.assets[a].height;
+							}	
+							*/
+							
+							//If an asset collides with an in-map collidable tile
+							//push it back to it's previous good position
+							if(me.assets[a].collidable){
+								var posx = me.assets[a].x / me.map.tileWidth;
+								var posy = me.assets[a].y / me.map.tileHeight;
+								//console.log("old: ("+ me.assets[a].oldx + ", " + me.assets[a].oldy + ")");
+								//console.log("new: ("+ me.assets[a].x + ", " + me.assets[a].y + ")");
+								//console.log( me.map.collidable[ me.map.tiles[posy][posx] ] );
+								if(me.map.collidable[ me.map.tiles[posy][posx] ]){
+									//if a barrier is met, reset the position
+									me.assets[a].x = me.assets[a].oldx;
+									me.assets[a].y = me.assets[a].oldy;
+									
+								}
+							}
+							
+							//the screen needs to be updated
+							me.update=true;
+							
 						}
-						
-						//the screen needs to be updated
-						me.update=true;
-						
 					}
 				}
 			}
 			
+            /* Redraw Map and Assets
+            ========================*/
+
 			if (me.update){
-				me.drawMap();
+			    me.drawMap();
+			    me.drawText();
 				for(var a in me.assets){
 					if(me.assets[a].alive){
 						var img = new Image();
 						img.src = me.assets[a].image;
+
+						/*if (typeof (me.assets[a].degrees) != "undefined") {
+                            //move the point to the center of the asset
+					        me.context.translate(
+                                me.assets[a].x + me.assets[a].height / 2,
+                                me.assets[a].y + me.assets[a].width / 2);
+                            //rotate the canvas
+							me.context.rotate( me.assets[a].degrees * Math.Pi/180 );
+							//console.log(me.assets[a].degrees);
+						}*/
+
 						me.context.drawImage(img, me.assets[a].x, me.assets[a].y);
+						//me.context.restore();
 					}
 				}
 				//clear update related flags
@@ -236,8 +276,25 @@ engine.prototype = {
 	
 	keyPressed: function(key){
 		this.currentKey = key;
-	}
+	},
 	
+    /* add Text 
+	addText: function (asset) {
+	    this.textAssets.push(asset);
+	},*/
+
+    /* Draw Text */
+	drawText: function () {
+	    for (a in this.textAssets) {
+	        this.textAssets[a].update();
+	        this.context.font = this.textAssets[a].font;
+	        this.context.fillStyle = this.textAssets[a].color;
+	        this.context.fillText(
+                this.textAssets[a].value,
+                this.textAssets[a].x,
+                this.textAssets[a].y);
+	    }
+	}
 };
 
 /*	Game Keyboard map
@@ -272,7 +329,8 @@ window.onkeydown = function(key){
 			break;
 		default:
 			//key not mapped
-			keyName = "Not Mapped";
+		    keyName = "Not Mapped";
+
 	}
 	
 	//send the key to the game engine

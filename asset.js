@@ -6,7 +6,7 @@
 var Asset = Base.extend({
 	collidable: true,
 	health: 100,
-	type: "",
+	type: "generic",
 	alive: true
 });
 
@@ -24,10 +24,11 @@ var Player = Asset.extend({
 		this.x = 32;
 		this.y = 32;
 		this.movement = 32;
-		this.image = "http://www.mikedoesweb.com/sandbox/game/images/smiley.jpg";
+		this.image = "http://www.mikedoesweb.com/sandbox/game/images/player.png";
 		this.collidable = true;
 		this.health = 100;
 		this.type = "player";
+		this.degrees = 90;
 	},
 	
 	update: function(key, collisionType){
@@ -87,8 +88,8 @@ var Enemy = Asset.extend({
 		this.height = 32;	// height in px
 		this.x = 160;
 		this.y = 160;
-		this.image = "http://www.mikedoesweb.com/sandbox/game/images/frowney.png";
-		this.collidable = false;
+		this.image = "http://www.mikedoesweb.com/sandbox/game/images/mario.png";
+		this.collidable = true;
 		this.orig_x = this.x;
 		this.orig_y = this.y;
 		this.limit = 32;
@@ -97,7 +98,7 @@ var Enemy = Asset.extend({
 		this.alive =  true;
 	},
 	
-	update: function(key){
+	update: function(key, collisionType){
 		
 		if(this.direction == "left"){
 			this.x -= 4;
@@ -115,6 +116,10 @@ var Enemy = Asset.extend({
 				this.direction = "left";
 			}
 		}
+
+		if (collisionType == "bullet") {
+		    this.alive = false;
+		}
 			
 		return true;
 	}
@@ -131,13 +136,13 @@ var Boat = Asset.extend({
 	
 		this.width = 64;	// width in px
 		this.height = 32;	// height in px
-		this.x = 128;
-		this.y = 250;
+		this.x = 158;
+		this.y = 280;
 		this.image = "http://www.mikedoesweb.com/sandbox/game/images/boat.png";
 		this.collidable = false,
 		this.orig_x = this.x;
 		this.orig_y = this.y;
-		this.limit = 32;
+		this.limit = 64;
 		this.direction = "right";
 		this.type = "enemy";
 		this.alive =  true;
@@ -146,10 +151,10 @@ var Boat = Asset.extend({
 	update: function(key){
 		
 		if(this.direction == "left"){
-			this.x -= 2;
+			this.x -= 1;
 		}
 		else if(this.direction == "right"){
-			this.x += 2;
+			this.x += 1;
 		}
 		
 		if(this.direction == "left"){
@@ -171,26 +176,43 @@ var Boat = Asset.extend({
  *	Inherits from Asset
  */
  
- var Bullet = Asset.extend({
+var Bullet = Asset.extend({
 	constructor: function(x,y){
 		this.x = x;
 		this.y = y;
 	},
 	
 	init: function(){	
-	
+	    this.type = "bullet";
 		this.width = 8;	// width in px
 		this.height = 8;	// height in px
 		this.image = "http://www.mikedoesweb.com/sandbox/game/images/bullet.png";
 		this.collidable = false,
-		this.type = "bullet";
 		this.alive =  true;
 	},
 	
 	update: function(key){
-		
 		this.x += 8
-			
 		return true;
 	} 
+ });
+ 
+var PlayerHealth = Asset.extend({
+     constructor: function(){
+         this.type = "GUI";
+     },
+     init: function () {
+        this.alive = true;
+        this.font = "20px Arial";
+        this.x = 10;
+        this.y = 20;
+        this.color = "#ffffff";
+        this.value = "";
+        window.setInterval(function () {
+            this.d = new Date();
+        }, 100);
+     },
+     update: function(){
+        this.value = "Dynamic Text: " + d.getSeconds();
+     }
  });
