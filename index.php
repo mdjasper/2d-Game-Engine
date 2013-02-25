@@ -54,6 +54,7 @@
 			var assets = [new Player(), new Enemy(), new PlayerHealth()];	//An array of assets
 			game.init(Level1, assets);			//Initialize the game
 			game.addAsset(new Boat());			//Add additional assets
+			game.sound.play("audio/theme.mp3", true);  //play background audio
 		</script>
 		<?php if(!$_GET['track']=='no'){ ?>
 		<script type="text/javascript">

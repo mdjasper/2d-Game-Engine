@@ -68,8 +68,13 @@ var Player = Asset.extend({
 				this.y += this.movement;
 				return true;
 				break;
+		    case "m":
+		        //console.log("Pressed Down!");
+		        game.sound.volume(0.0);
+		        break;
 			case "Space":
-				game.addAsset(new Bullet(this.x + 32, this.y + 16));
+			    game.addAsset(new Bullet(this.x + 32, this.y + 16));
+			    game.sound.play("audio/shot.mp3");
 				break;
 		}
 	}	

@@ -103,6 +103,8 @@ engine.prototype = {
 		
 		//Pre-load the map, then jump into the game loop
 		this.preLoadMap();
+
+		//this.sound.init();
 		
 	},
 	
@@ -294,7 +296,30 @@ engine.prototype = {
                 this.textAssets[a].x,
                 this.textAssets[a].y);
 	    }
-	}
+	},
+
+	sound: {
+        sounds: [],
+	    play: function (audioUrl, loop) {
+	        this.sounds[audioUrl] = new Audio(audioUrl);
+	        if (loop) {
+	            this.sounds[audioUrl].addEventListener('ended', function () {
+	                this.currentTime = 0;
+	                this.play();
+	            }, false);
+	        }
+	        this.sounds[audioUrl].play();
+	    }, 
+	    volume: function (v) {
+	        var num = this.sounds.length;
+	        for (var i = 0; i < num; i++){
+	            this.sounds[i].volume = 0.0;
+	        }
+	    }
+	},
+ 
+
+
 };
 
 /*	Game Keyboard map
@@ -327,6 +352,9 @@ window.onkeydown = function(key){
 		case 40:
 			keyName = "Down";
 			break;
+	    case 77:
+	        keyName = "m";
+	        break;
 		default:
 			//key not mapped
 		    keyName = "Not Mapped";
