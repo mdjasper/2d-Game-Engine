@@ -176,7 +176,7 @@ engine.prototype = {
 				
 				    /* Update Assets
                     ================*/ 
-
+					
 					if(typeof me.assets[a].update == 'function'){
 						if(me.assets[a].update(me.currentKey, collision) ){
 					
@@ -224,7 +224,7 @@ engine.prototype = {
 
 			if (me.update){
 			    me.drawMap();
-			    me.drawText();
+			    me.drawText(me.currentKey);
 				for(var a in me.assets){
 					if(me.assets[a].alive){
 						var img = new Image();
@@ -286,9 +286,9 @@ engine.prototype = {
 	},*/
 
     /* Draw Text */
-	drawText: function () {
+	drawText: function (key) {
 	    for (a in this.textAssets) {
-	        this.textAssets[a].update();
+	        this.textAssets[a].update(key);
 	        this.context.font = this.textAssets[a].font;
 	        this.context.fillStyle = this.textAssets[a].color;
 	        this.context.fillText(
@@ -300,20 +300,21 @@ engine.prototype = {
 
 	sound: {
         sounds: [],
+		index: 0,
 	    play: function (audioUrl, loop) {
-	        this.sounds[audioUrl] = new Audio(audioUrl);
+	        this.sounds[this.index] = new Audio(audioUrl);
 	        if (loop) {
-	            this.sounds[audioUrl].addEventListener('ended', function () {
+	            this.sounds[this.index].addEventListener('ended', function () {
 	                this.currentTime = 0;
 	                this.play();
 	            }, false);
 	        }
-	        this.sounds[audioUrl].play();
+	        this.sounds[this.index].play();
+			this.index += 1;
 	    }, 
 	    volume: function (v) {
-	        var num = this.sounds.length;
-	        for (var i = 0; i < num; i++){
-	            this.sounds[i].volume = 0.0;
+	        for (var i = 0; i < this.index; i++){
+	            this.sounds[i].volume = v;
 	        }
 	    }
 	},

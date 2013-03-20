@@ -51,7 +51,7 @@
 		
 		<script type="text/javascript">
 			var game = engine("game");			//Create the game engine
-			var assets = [new Player(), new Enemy(), new PlayerHealth()];	//An array of assets
+			var assets = [new Player(), new Enemy(), new PlayerHealth(), new VolumeControl()];	//An array of assets
 			game.init(Level1, assets);			//Initialize the game
 			game.addAsset(new Boat());			//Add additional assets
 			game.sound.play("audio/theme.mp3", true);  //play background audio

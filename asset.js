@@ -208,7 +208,7 @@ var PlayerHealth = Asset.extend({
      },
      init: function () {
         this.alive = true;
-        this.font = "20px Arial";
+        this.font = "20px Arial"; 
         this.x = 10;
         this.y = 20;
         this.color = "#ffffff";
@@ -220,4 +220,31 @@ var PlayerHealth = Asset.extend({
      update: function(){
         this.value = "Dynamic Text: " + d.getSeconds();
      }
+ });
+ 
+ var VolumeControl = Asset.extend({
+	constructor: function(){
+         this.type = "GUI";
+    },
+	init: function(){
+		this.alive = true;
+        this.font = "14px Arial";
+        this.x = 270;
+        this.y = 345;
+        this.color = "#ffffff";
+        this.value = "[m] Sound: ON";
+		this.volume = 1.0;
+	},
+	update: function(key){
+		if(key == "m"){
+			if(this.volume == 0.0){
+				this.volume = 1.0;
+				this.value = "[m] Sound: ON";
+			} else {
+				this.volume = 0.0
+				this.value = "[m] Sound: OFF";
+			}
+			game.sound.volume(this.volume);
+		}
+	},
  });
