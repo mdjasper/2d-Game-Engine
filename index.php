@@ -21,7 +21,8 @@
     </script>
         </head>
 	<body onload="prettyPrint()">
-        &larr;&uarr;&darr;&rarr;[space]<br />
+        Player Controls: &larr;&uarr;&darr;&rarr;[space]<br />
+		Volume Controls: OFF [1][2][3][4] ON
 		<canvas id="game">Sorry! This game relies on HTML5 and JavaScript.<br>
 		Please update to something like <a href="https://www.google.com/chrome/">Google Chrome</a> :)</canvas>
         
@@ -34,24 +35,20 @@
 <pre>
 &lt;div id="game"&gt;&lt;/div&gt;
 &lt;script type="text/javascript">
-    //Create the game engine
-    var game = engine("game");
-
-    //An array of assets
-    var assets = [new Player(), new Enemy(), new GuiText()];
-
-    //Initialize the game
-    game.init(Level1, assets);
-
-    //Add additional assets, if desired
-    game.addAsset(new Boat());
+	var game = engine("game");			//Create the game engine
+	var healthGUI = new PlayerHealth();
+	var assets = [new Player(healthGUI), new Enemy(), healthGUI, new VolumeControl()];	//An array of assets
+	game.init(Level1, assets);			//Initialize the game
+	game.addAsset(new Boat());			//Add additional assets
+	game.sound.play("audio/theme.mp3", true);  //play background audio
 &lt;/script&gt;
 </pre></li>
 	</ul>
 		
 		<script type="text/javascript">
 			var game = engine("game");			//Create the game engine
-			var assets = [new Player(), new Enemy(), new PlayerHealth(), new VolumeControl()];	//An array of assets
+			var healthGUI = new PlayerHealth();
+			var assets = [new Player(healthGUI), new Enemy(), healthGUI, new VolumeControl()];	//An array of assets
 			game.init(Level1, assets);			//Initialize the game
 			game.addAsset(new Boat());			//Add additional assets
 			game.sound.play("audio/theme.mp3", true);  //play background audio

@@ -353,9 +353,19 @@ window.onkeydown = function(key){
 		case 40:
 			keyName = "Down";
 			break;
-	    case 77:
-	        keyName = "m";
-	        break;
+	    case 49:
+			keyName = "1";
+			break;
+		case 50:
+			keyName = "2";
+			break;
+		case 51:
+			keyName = "3";
+			break;
+		case 52:
+			keyName = "4";
+			break;
+				
 		default:
 			//key not mapped
 		    keyName = "Not Mapped";

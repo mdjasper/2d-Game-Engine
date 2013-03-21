@@ -16,6 +16,10 @@ var Asset = Base.extend({
  */
 
 var Player = Asset.extend({
+
+	constructor: function(healthWatcher){
+		this.healthWatcher = healthWatcher;
+	},
 	
 	init: function(){
 		
@@ -45,6 +49,7 @@ var Player = Asset.extend({
 			if(this.health < 1){
 				this.alive = false;
 			}
+			this.healthWatcher.setValue(this.health);
 		}
 		
 		switch(key){
@@ -202,7 +207,7 @@ var Bullet = Asset.extend({
 	} 
  });
  
-var PlayerHealth = Asset.extend({
+/*var PlayerHealth = Asset.extend({
      constructor: function(){
          this.type = "GUI";
      },
@@ -220,7 +225,28 @@ var PlayerHealth = Asset.extend({
      update: function(){
         this.value = "Dynamic Text: " + d.getSeconds();
      }
+ });*/
+ 
+ var PlayerHealth = Asset.extend({
+     constructor: function(){
+         this.type = "GUI";
+     },
+     init: function () {
+        this.alive = true;
+        this.font = "14px Arial"; 
+        this.x = 10;
+        this.y = 345;
+        this.color = "#ffffff";
+        this.value = "Health: 100%";
+     },
+	 setValue: function(v){
+		this.value = "Health: " + v + "%";
+	 },
+     update: function(){
+        this.value = this.value;
+     }
  });
+ 
  
  var VolumeControl = Asset.extend({
 	constructor: function(){
@@ -229,22 +255,46 @@ var PlayerHealth = Asset.extend({
 	init: function(){
 		this.alive = true;
         this.font = "14px Arial";
-        this.x = 270;
+        this.x = 300;
         this.y = 345;
         this.color = "#ffffff";
-        this.value = "[m] Sound: ON";
-		this.volume = 1.0;
+        this.value = "Sound: ON";
+		this.volume = 100;
 	},
 	update: function(key){
-		if(key == "m"){
-			if(this.volume == 0.0){
-				this.volume = 1.0;
-				this.value = "[m] Sound: ON";
-			} else {
-				this.volume = 0.0
-				this.value = "[m] Sound: OFF";
-			}
-			game.sound.volume(this.volume);
+	
+		if(key){
+			switch(key){
+				case "1":
+					this.volume = 0;
+					this.value = "Sound: OFF"
+					break;
+				case "2":
+					this.volume -= 10;
+					if(this.volume <= 0){
+						this.volume = 0;
+						this.value = "Sound: OFF";
+					}else{
+						this.value = "Sound: " + this.volume + "%";
+					}
+					break;
+				case "3":
+					this.volume += 10;
+					if(this.volume >= 100){
+						this.volume = 100;
+						this.value = "Sound: ON";
+					}else{
+						this.value = "Sound: " + this.volume  + "%";
+					}
+					
+					break;
+				case "4":
+					this.volume = 100;
+					this.value = "Sound: ON";
+					break;
+			}			
+			
+			game.sound.volume(this.volume / 100);
 		}
 	},
  });
