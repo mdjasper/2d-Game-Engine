@@ -22,7 +22,7 @@
         </head>
 	<body onload="prettyPrint()">
         Player Controls: &larr;&uarr;&darr;&rarr;[space]<br />
-		Volume Controls: OFF [1][2][3][4] ON
+		Volume Controls: OFF [1][2][3][4] ON<br />
 		<canvas id="game">Sorry! This game relies on HTML5 and JavaScript.<br>
 		Please update to something like <a href="https://www.google.com/chrome/">Google Chrome</a> :)</canvas>
         
@@ -36,8 +36,7 @@
 &lt;div id="game"&gt;&lt;/div&gt;
 &lt;script type="text/javascript">
 	var game = engine("game");			//Create the game engine
-	var healthGUI = new PlayerHealth();
-	var assets = [new Player(healthGUI), new Enemy(), healthGUI, new VolumeControl()];	//An array of assets
+	var assets = [new Player(), new Enemy(), healthGUI, new VolumeControl(), new PlayerHealth()];	//An array of assets
 	game.init(Level1, assets);			//Initialize the game
 	game.addAsset(new Boat());			//Add additional assets
 	game.sound.play("audio/theme.mp3", true);  //play background audio
@@ -47,8 +46,7 @@
 		
 		<script type="text/javascript">
 			var game = engine("game");			//Create the game engine
-			var healthGUI = new PlayerHealth();
-			var assets = [new Player(healthGUI), new Enemy(), healthGUI, new VolumeControl()];	//An array of assets
+			var assets = [new Player(), new Enemy(), new VolumeControl(), new PlayerHealth()];	//An array of assets
 			game.init(Level1, assets);			//Initialize the game
 			game.addAsset(new Boat());			//Add additional assets
 			game.sound.play("audio/theme.mp3", true);  //play background audio

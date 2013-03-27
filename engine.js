@@ -173,41 +173,36 @@ engine.prototype = {
 							}
 						}
 					}
-				
+					
+					/* update listeners
+                    ===================*/ 
+					
+					me.events.process();
+									
 				    /* Update Assets
                     ================*/ 
 					
 					if(typeof me.assets[a].update == 'function'){
 						if(me.assets[a].update(me.currentKey, collision) ){
-					
-							/*//limit asset movement boundaries to on screen positions
-							if(me.assets[a].x < 0){
-								me.assets[a].x = 0;
-							}
-							if(me.assets[a].y < 0){
-								me.assets[a].y = 0;
-							}
-							if(me.assets[a].x > me.mapWidth - me.assets[a].width){
-								me.assets[a].x = me.mapWidth - me.assets[a].width;
-							}
-							if(me.assets[a].y > me.mapHeight - me.assets[a].height){
-								me.assets[a].y = me.mapHeight - me.assets[a].height;
-							}	
-							*/
 							
 							//If an asset collides with an in-map collidable tile
 							//push it back to it's previous good position
 							if(me.assets[a].collidable){
-								var posx = me.assets[a].x / me.map.tileWidth;
-								var posy = me.assets[a].y / me.map.tileHeight;
-								//console.log("old: ("+ me.assets[a].oldx + ", " + me.assets[a].oldy + ")");
-								//console.log("new: ("+ me.assets[a].x + ", " + me.assets[a].y + ")");
-								//console.log( me.map.collidable[ me.map.tiles[posy][posx] ] );
-								if(me.map.collidable[ me.map.tiles[posy][posx] ]){
-									//if a barrier is met, reset the position
-									me.assets[a].x = me.assets[a].oldx;
-									me.assets[a].y = me.assets[a].oldy;
-									
+							
+								//Destroy assets that want to be destroyed if they go off map (like bullets)
+								var posx = Math.round(me.assets[a].x / me.map.tileWidth);
+								var posy = Math.round(me.assets[a].y / me.map.tileHeight);
+								
+								if( me.assets[a].offMapDestroy && posx > me.map.width ||
+									me.assets[a].offMapDestroy && posy > me.map.height){
+										delete me.assets[a];
+								} else {								
+									if(me.map.collidable[ me.map.tiles[posy][posx] ]){
+										//if a barrier is met, reset the position
+										me.assets[a].x = me.assets[a].oldx;
+										me.assets[a].y = me.assets[a].oldy;
+										
+									}
 								}
 							}
 							
@@ -269,8 +264,8 @@ engine.prototype = {
 	},
 	
 	addAsset: function(asset){
-		this.assets.push(asset);
 		asset.init();
+		this.assets.push(asset);
 	},
 	
 	/*	keyboard key press
@@ -318,6 +313,27 @@ engine.prototype = {
 	        }
 	    }
 	},
+	
+	events: {
+		listeners: [],
+		events: [],
+		publishEvent: function (e, d) {
+			this.events.push({event: e, data: d});
+		},
+		listenFor: function (e, c) {
+			this.listeners.push({event: e, callback: c});
+		},
+		process: function(){
+			for (var e in this.events){
+				for (var l in this.listeners) {
+					if (this.listeners[l].event === this.events[e].event) {
+						this.listeners[l].callback(this.events[e].data);
+					}
+				}
+			}
+			this.events = [];
+		}
+	}
  
 
 

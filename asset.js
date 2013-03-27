@@ -16,10 +16,6 @@ var Asset = Base.extend({
  */
 
 var Player = Asset.extend({
-
-	constructor: function(healthWatcher){
-		this.healthWatcher = healthWatcher;
-	},
 	
 	init: function(){
 		
@@ -49,7 +45,7 @@ var Player = Asset.extend({
 			if(this.health < 1){
 				this.alive = false;
 			}
-			this.healthWatcher.setValue(this.health);
+			game.events.publishEvent('player health', this.health);
 		}
 		
 		switch(key){
@@ -128,6 +124,7 @@ var Enemy = Asset.extend({
 		}
 
 		if (collisionType == "bullet") {
+			console.log("Collided with bullet");
 		    this.alive = false;
 		}
 			
@@ -194,38 +191,19 @@ var Bullet = Asset.extend({
 	
 	init: function(){	
 	    this.type = "bullet";
-		this.width = 8;	// width in px
-		this.height = 8;	// height in px
+		this.offMapDestroy = true;
+		this.width = 8;
+		this.height = 8;
 		this.image = "http://www.mikedoesweb.com/sandbox/game/images/bullet.png";
-		this.collidable = false,
+		this.collidable = true;
 		this.alive =  true;
 	},
 	
-	update: function(key){
-		this.x += 8
+	update: function(){
+		this.x += 8;
 		return true;
 	} 
  });
- 
-/*var PlayerHealth = Asset.extend({
-     constructor: function(){
-         this.type = "GUI";
-     },
-     init: function () {
-        this.alive = true;
-        this.font = "20px Arial"; 
-        this.x = 10;
-        this.y = 20;
-        this.color = "#ffffff";
-        this.value = "";
-        window.setInterval(function () {
-            this.d = new Date();
-        }, 100);
-     },
-     update: function(){
-        this.value = "Dynamic Text: " + d.getSeconds();
-     }
- });*/
  
  var PlayerHealth = Asset.extend({
      constructor: function(){
@@ -238,10 +216,11 @@ var Bullet = Asset.extend({
         this.y = 345;
         this.color = "#ffffff";
         this.value = "Health: 100%";
+		me = this;
+		game.events.listenFor('player health', function(data){
+			me.value = "Health: " + data + "%";
+		});
      },
-	 setValue: function(v){
-		this.value = "Health: " + v + "%";
-	 },
      update: function(){
         this.value = this.value;
      }
