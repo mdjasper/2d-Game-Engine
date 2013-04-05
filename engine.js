@@ -7,8 +7,8 @@
  *
  */
 
-/* Game Engine Instanciation
-==============================*/
+/* Main game engine object
+===========================*/
 
 function engine(target) {
 
@@ -66,15 +66,15 @@ engine.prototype = {
 
 	init: function (map, assetArray){
 	
-	    this.map = map;
+		this.map = map;
 
-	    for (var a in assetArray) {
-	        if (assetArray[a].type == "GUI") {
-	            this.textAssets.push(assetArray[a]);
-	        } else {
-	            this.assets.push(assetArray[a]);
-	        }
-	    }
+		for (var a in assetArray) {
+			if (assetArray[a].type == "GUI") {
+				this.textAssets.push(assetArray[a]);
+			} else {
+				this.assets.push(assetArray[a]);
+			}
+		}
 		
 		//Define dimentions
 		this.tileWidth = map.tileWidth;
@@ -91,7 +91,7 @@ engine.prototype = {
 			this.assets[a].init();
 		}
 
-	    //Call all textAsset's init() function
+		//Call all textAsset's init() function
 		for (var a in this.textAssets) {
 		    this.textAssets[a].init();
 		}
@@ -141,13 +141,13 @@ engine.prototype = {
 		//console.log("Loop()");
 		var me = this;
 	
-        setInterval(function() {
+		setInterval(function() {
 			me.context.save();
 			//loop through the assets
 			for (var a in me.assets) {
 
 			    /* Asset Collisions
-                ===================*/
+				===================*/
 
 				if(me.assets[a].alive){
 				    var collision = "-1";
@@ -168,12 +168,12 @@ engine.prototype = {
 					}
 					
 					/* update listeners
-                    ===================*/ 
+					===================*/ 
 					
 					me.events.process();
 									
-				    /* Update Assets
-                    ================*/ 
+					/* Update Assets
+					================*/ 
 					
 					if(typeof me.assets[a].update == 'function'){
 						if(me.assets[a].update(me.currentKey, collision) ){
@@ -224,10 +224,9 @@ engine.prototype = {
 				me.update = false;
 				me.currentKey = "";
 			}
-			
 
-        }, 1000 / this.fps);
-      },
+		}, 1000 / this.fps);
+	},
 
 	
 	/* Map Draw-er
@@ -256,7 +255,9 @@ engine.prototype = {
 		this.currentKey = key;
 	},
 
-    /* Draw Text */
+	/* draw text
+	============*/
+	
 	drawText: function (key) {
 	    for (a in this.textAssets) {
 	        this.textAssets[a].update(key);
@@ -360,7 +361,7 @@ window.onkeydown = function(key){
 				
 		default:
 			//key not mapped
-		    keyName = "Not Mapped";
+			keyName = "Not Mapped";
 			return document.defaultAction();
 	}
 	
