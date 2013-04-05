@@ -1,14 +1,13 @@
-
 /*
- *		Javascript Game Engine
- *		Michael Jasper
- *		(c) 2012
- *		Version 0.2
- *		An HTML5, Canvas, Javascript Demo
+ *  Javascript Game Engine
+ *  Michael Jasper
+ *  (c) 2013
+ *  Version 0.3
+ *  An HTML5, Canvas, Javascript Demo
  *
  */
 
-/*	Game Engine Instanciation
+/* Game Engine Instanciation
 ==============================*/
 
 function engine(target) {
@@ -19,7 +18,7 @@ function engine(target) {
 		Version: 0.3,
 		Author: "Michael Jasper",
 		Created: "21 February 2012",
-		Updated: "12 October 2012"
+		Updated: "5 April 2013"
 	};
 
 	if (target) {
@@ -60,15 +59,13 @@ function engine(target) {
 	}
 }
 
-/*	Game Engine Functions
+/* Game Engine Functions
 ===========================*/
 
 engine.prototype = {
 
 	init: function (map, assetArray){
 	
-		//console.log("init()");
-		
 	    this.map = map;
 
 	    for (var a in assetArray) {
@@ -78,8 +75,6 @@ engine.prototype = {
 	            this.assets.push(assetArray[a]);
 	        }
 	    }
-	    //console.log(this.assets);
-	    //console.log(this.textAssets);
 		
 		//Define dimentions
 		this.tileWidth = map.tileWidth;
@@ -103,12 +98,10 @@ engine.prototype = {
 		
 		//Pre-load the map, then jump into the game loop
 		this.preLoadMap();
-
-		//this.sound.init();
 		
 	},
 	
-	/*	Map Pre-loader
+	/* Map Pre-loader
 	====================*/
 
 	preLoadMap: function(){
@@ -130,7 +123,7 @@ engine.prototype = {
 		}
 	},
 	
-	/*	Pre-load helper
+	/* Pre-load helper
 	====================*/
 	
 	preLoadCheck: function(){
@@ -140,7 +133,7 @@ engine.prototype = {
 		}
 	},
 	
-	/*	Main Game Loop
+	/* Main Game Loop
 	===================*/
 	
 	loop: function() {
@@ -214,8 +207,8 @@ engine.prototype = {
 				}
 			}
 			
-            /* Redraw Map and Assets
-            ========================*/
+			/* Redraw Map and Assets
+			========================*/
 
 			if (me.update){
 			    me.drawMap();
@@ -224,19 +217,7 @@ engine.prototype = {
 					if(me.assets[a].alive){
 						var img = new Image();
 						img.src = me.assets[a].image;
-
-						/*if (typeof (me.assets[a].degrees) != "undefined") {
-                            //move the point to the center of the asset
-					        me.context.translate(
-                                me.assets[a].x + me.assets[a].height / 2,
-                                me.assets[a].y + me.assets[a].width / 2);
-                            //rotate the canvas
-							me.context.rotate( me.assets[a].degrees * Math.Pi/180 );
-							//console.log(me.assets[a].degrees);
-						}*/
-
 						me.context.drawImage(img, me.assets[a].x, me.assets[a].y);
-						//me.context.restore();
 					}
 				}
 				//clear update related flags
@@ -249,7 +230,7 @@ engine.prototype = {
       },
 
 	
-	/*	Map Draw-er
+	/* Map Draw-er
 	==================*/
 	
 	drawMap: function () {
@@ -268,17 +249,12 @@ engine.prototype = {
 		this.assets.push(asset);
 	},
 	
-	/*	keyboard key press
+	/* keyboard key press
 	=======================*/
 	
 	keyPressed: function(key){
 		this.currentKey = key;
 	},
-	
-    /* add Text 
-	addText: function (asset) {
-	    this.textAssets.push(asset);
-	},*/
 
     /* Draw Text */
 	drawText: function (key) {
@@ -294,7 +270,7 @@ engine.prototype = {
 	},
 
 	sound: {
-        sounds: [],
+		sounds: [],
 		index: 0,
 	    play: function (audioUrl, loop) {
 	        this.sounds[this.index] = new Audio(audioUrl);
@@ -339,7 +315,7 @@ engine.prototype = {
 
 };
 
-/*	Game Keyboard map
+/* Game Keyboard map
 =====================*/
 
 window.onkeydown = function(key){
@@ -385,7 +361,7 @@ window.onkeydown = function(key){
 		default:
 			//key not mapped
 		    keyName = "Not Mapped";
-
+			return document.defaultAction();
 	}
 	
 	//send the key to the game engine
